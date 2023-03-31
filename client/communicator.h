@@ -39,44 +39,45 @@ public:
 	}
 
 
-	std::string delete_req(std::string type, std::string key){
-		return send_request("PUT /sc-leveldb/api/delete?type=" + type + "&key=" + key, 0);   // send request for deletion
+	std::string delete_req(int channel, std::string type, std::string key){
+		return send_request("PUT /sc-leveldb/api/delete?type=" + type + "&key=" + key, channel);   // send request for deletion
 	}
 
 
-	std::string healthcheck_req(){
-		return send_request("GET /sc-leveldb/api/healthcheck", 0);   // send request for healthcheck
+	std::string healthcheck_req(int channel){
+		return send_request("GET /sc-leveldb/api/healthcheck", channel);   // send request for healthcheck
 	}
 
 
-	std::string initialize_req(std::string type){
-		return send_request("POST /sc-leveldb/api/initialize/" + type, 0);   // send request for initialization
+	std::string initialize_req(int channel, std::string type){
+		return send_request("POST /sc-leveldb/api/initialize/" + type, channel);   // send request for initialization
 	}
 
 
-	std::string insert_req(std::string type, std::string key, std::string value){
-		return send_request("PUT /sc-leveldb/api/insert?type=" + type + "&key=" + key + "&value=" + value, 0);   // send request for insertion
+	std::string insert_req(int channel, std::string type, std::string key, std::string value){
+		return send_request("PUT /sc-leveldb/api/insert?type=" + type + "&key=" + key + "&value=" + value, channel);   // send request for insertion
 	}
 
 
-	std::string queryAll_req(std::string type){
-		return send_request("GET /sc-leveldb/api/queryAll/" + type, 0);   // send request for all-entries query
+	std::string queryAll_req(int channel, std::string type){
+		return send_request("GET /sc-leveldb/api/queryAll/" + type, channel);   // send request for all-entries query
 	}
 
 
-	std::string query_req(std::string type, std::string key){
-		return send_request("GET /sc-leveldb/api/query?type=" + type + "&key=" + key, 0);   // send request for query
+	std::string query_req(int channel, std::string type, std::string key){
+		return send_request("GET /sc-leveldb/api/query?type=" + type + "&key=" + key, channel);   // send request for query
 	}
 
 
-	std::string reset_req(){
-		return send_request("POST /sc-leveldb/api/reset", 0);   // send request for resetting
+	std::string reset_req(int channel){
+		return send_request("POST /sc-leveldb/api/reset", channel);   // send request for resetting
 	}
 
 
 	void open_comm(int totalCommChannels){
 		nChannels = MIN(totalCommChannels, 100);
 		nChannels = MAX(nChannels, 1);
+
 		for (int i = 0; i < nChannels; i++){
 			/* get file descriptor to access new socket */
 			if ((sockfd[i] = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -109,6 +110,7 @@ public:
 		char reqBuffer[reqBufSize];
 		char resBuffer[resBufSize] = { 0 };
 		std::string host, responseStr;
+		size_t pos;
 
 		host = ipv4 + ":" + std::to_string(port);   // get host
 
@@ -125,6 +127,8 @@ public:
 			ret = read(sockfd[channel], resBuffer, resBufSize);   // read data
 			if (ret > 0){
 				responseStr = resBuffer;
+				pos = responseStr.find("[{\"Status-Code\"");
+				responseStr.erase(0, pos);   // keeping main message from server (removing headers)
 			}
 			else{
 				printf("--------------------- Communication Error ---------------------\n");

@@ -1,9 +1,13 @@
 client: client.cpp communicator.h
-	g++ -o client client.cpp -Wall -Werror -O2
+	g++ -o client client.cpp -Wall -Werror -O2 -lpthread
 
 
-run: client
-	./client
+run_serial: client
+	./client s
+
+
+run_parallel: client
+	./client p 2
 
 
 clean: client
