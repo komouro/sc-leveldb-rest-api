@@ -6,7 +6,7 @@ We have implemented a RESTful API that manages a key-value storage based on Leve
 ## Components
 **Database**: The storage layer includes a key-value database. More specifically, we employ the Universal abstract-level database for Node.js and browsers. More details about the database can be found on https://github.com/Level/level.<br />
 **Dataset**: The database can be initialized with entries that can be found in text files in the ./server directory. Each file contains key-value pairs that correspond to account balances, voting weights, proposal votes or product prices. The dataset represents part of the state of a blockchain node that executes smart contract transactions.<br />
-**Server**: The management of the database is done by a central server, implemented using Node.js and Express in the ./server directory. The server accepts multiple requests from multiple clients, performs read and write operations on the database and send a response back to each client, based on the final status of the requested set of operations.<br />
+**Server**: The management of the database is done by a central server, implemented using Node.js and Express in the ./server directory. The server accepts multiple requests from multiple clients, performs read and write operations on the database and sends a response back to each client, based on the final status of the requested set of operations.<br />
 **Client**: A basic client is implemented in C++ for the submission of requests in order to test the fundamental functionality of the server. The client can be executed using a serial or a parallel version (fork-join). The communication between the threads of the client and the server is achieved by sockets.
 
 ## Installation - Execution
@@ -26,7 +26,8 @@ For the serial execution of the script, we can run:
 ```
 make run_serial
 ```
-and for the parallel:
+For the parallel execution of the script, we can run:
 ```
 make run_parallel
 ```
+The final commands are based on rules written in our Makefile in the ./client directory. Building and executing the testing script for the client can also be done manually.
